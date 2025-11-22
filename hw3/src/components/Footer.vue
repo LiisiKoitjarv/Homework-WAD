@@ -18,7 +18,7 @@ export default {
   padding: 1rem;
   text-align: center;
   background-color: aliceblue;
-  width: 100%;
+  font-family: monospace;
 }
 
 </style>

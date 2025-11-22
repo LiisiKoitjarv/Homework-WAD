@@ -15,11 +15,19 @@ export default createStore({
     incrementLikes(state, postId) {
       const post = state.posts.find(p => p.id === postId)
       if (post) post.likes++
+    },
+    resetLikes(state) {
+      state.posts.forEach(post => {
+        post.likes = 0
+      });
     }
   },
   actions: {
     likePost({ commit }, postId) {
       commit('incrementLikes', postId)
+    },
+    resetAllLikes({ commit }) {
+      commit('resetLikes')
     }
   }
 })
