@@ -1,20 +1,32 @@
 <template>
   <div class="home">
-    <p>This is a home page</p>
+    <PostList />
   </div>
 </template>
 
 <script>
+import PostList from '@/components/PostList.vue'
+
 export default {
   name: 'HomeView',
+  components: { PostList }
 }
 </script>
 
 <style scoped>
 .home {
-  font-weight: bold;
-  padding: 10px;
+  padding: 20px;          
   background-color: aliceblue;
-  min-height: 100px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; 
+}
+
+.posts-container {
+  width: 100%;
+  max-width: 600px;       
+  display: flex;
+  flex-direction: column;
+  gap: 15px;               
 }
 </style>
