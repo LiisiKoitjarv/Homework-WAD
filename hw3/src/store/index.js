@@ -20,6 +20,17 @@ export default createStore({
       state.posts.forEach(post => {
         post.likes = 0
       });
+    },
+    addPost(state, post) {
+      const newPost = {
+        text: post.text,
+        created_at: post.created_at,
+        author: post.author,
+        logo: post.logo,
+        likes: 0
+      }
+      state.posts.push(newPost) 
+      return newId
     }
   },
   actions: {
@@ -28,6 +39,14 @@ export default createStore({
     },
     resetAllLikes({ commit }) {
       commit('resetLikes')
+    },
+    addPost({ commit }, post) {
+      return new Promise((resolve) => {
+        const id = commit('addPost', post)
+        resolve(
+          undefined
+        )
+      })
     }
   }
 })
