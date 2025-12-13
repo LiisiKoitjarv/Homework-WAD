@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post" @click="openPost">
     <!-- Author info -->
     <div class="post-header">
       <img :src="post.logo" alt="Author logo" class="author-logo"/>
@@ -17,7 +17,7 @@
 
     <!-- Likes -->
     <div class="post-footer">
-      <button @click="like" class="like-button">
+      <button @click.stop="like" class="like-button">
         <img :src="require('@/assets/images/likebutton.png')" alt="Like" class="like-icon"/>
         <span>{{ post.likes }}</span>
       </button>
@@ -42,6 +42,9 @@ export default {
     ...mapActions(['likePost']),
     like() {
       this.likePost(this.post.id)
+    },
+    openPost() {
+      this.$router.push({ name: 'post', params: { id: this.post.id } })
     }
   }
 }

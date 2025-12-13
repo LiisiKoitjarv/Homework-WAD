@@ -34,9 +34,18 @@ export default createStore({
         likes: 0
       }
 
-  state.posts.push(newPost)
-  return newId
-}
+      state.posts.push(newPost)
+      return newId
+    },
+    updatePost(state, payload) {
+      const post = state.posts.find(p => p.id === payload.id)
+      if (post) {
+        post.text = payload.text
+      }
+    },
+    deletePost(state, id) {
+      state.posts = state.posts.filter(p => p.id !== id)
+    }
   },
   actions: {
     likePost({ commit }, postId) {
