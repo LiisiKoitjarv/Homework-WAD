@@ -22,16 +22,21 @@ export default createStore({
       });
     },
     addPost(state, post) {
+      const newId =
+        state.posts.length > 0 ? Math.max(...state.posts.map(p => p.id)) + 1 : 1
+
       const newPost = {
+        id: newId,
         text: post.text,
         created_at: post.created_at,
         author: post.author,
         logo: post.logo,
         likes: 0
       }
-      state.posts.push(newPost) 
-      return newId
-    }
+
+  state.posts.push(newPost)
+  return newId
+}
   },
   actions: {
     likePost({ commit }, postId) {
@@ -43,9 +48,7 @@ export default createStore({
     addPost({ commit }, post) {
       return new Promise((resolve) => {
         const id = commit('addPost', post)
-        resolve(
-          undefined
-        )
+        resolve(id)
       })
     }
   }
