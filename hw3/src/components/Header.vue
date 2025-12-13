@@ -2,20 +2,42 @@
     <header class="header">
       <ul class="nav">
           <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/add">Add Post</router-link></li>
-          <li><router-link to="/signup">Signup</router-link></li>
           <li><router-link to="/contact">Contacts</router-link></li>
       </ul>
       <div class="profile-menu">
-          <img src="@\assets\images\hw1icon.png" width="50" height="50" alt="My picture" class="logo">
-      </div>
+            <template v-if="isAuthenticated">
+                <button @click="handleLogout" class="logout-button">Log out</button>
+            </template>
+            
+            <div class="profile-icon-container">
+                <img v-if="isAuthenticated" src="@/assets/images/hw1icon.png" width="50" height="50" alt="Profile picture" class="logo authenticated">
+
+                <router-link v-else to="/signup">
+                    <img src="@/assets/images/hw1icon.png" width="50" height="50" alt="Profile picture" class="logo">
+                </router-link>
+            </div>
+        </div>
   </header>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     name: 'AppHeader',
+    
+    computed: {
+        ...mapGetters(['isAuthenticated']) 
+    },
+    
+    methods: {
+        ...mapActions(['logout']), 
+        
+        async handleLogout() {
+            await this.logout();
+            this.$router.push('/signup');
+        }
+    }
 }
 </script>
 

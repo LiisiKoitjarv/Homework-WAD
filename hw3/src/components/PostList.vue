@@ -3,7 +3,8 @@
     <Post 
       v-for="post in allPosts" 
       :key="post.id" 
-      :post="post" 
+      :post="post"
+      @click.native="handleClick(post.id)"
     />
   </div>
 </template>
@@ -16,6 +17,11 @@ export default {
   components: { Post },
   computed: {
     ...mapGetters(['allPosts'])
+  },
+  methods: {
+    handleClick(id) {
+      this.$emit('postClick', id)
+    }
   }
 }
 </script>

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import SignupView from '@/views/SignupView.vue'
 import AddPostView from '@/views/AddPostView.vue'
 import PostView from '@/views/PostView.vue'
+import ContactUs from '@/views/ContactUs.vue'
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     name: 'post',
     component: PostView,
     props: true
+  },
+  {
+    path: '/contact',         
+    name: 'contact',
+    component: ContactUs
   }
 ]
 

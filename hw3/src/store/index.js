@@ -1,64 +1,118 @@
 import { createStore } from 'vuex'
-import postData from '../../json/myjson.json'
-console.log(postData)
+
+const API_URL = 'http://localhost:3000'; 
 
 export default createStore({
   state: {
-    posts: postData.map(post => ({ ...post, likes: post.likes || 0 })), 
+    posts: [], 
+    isAuthenticated: false,
+    user: null, 
+    users: [],
   },
   getters: {
     allPosts(state) {
       return state.posts
+    },
+    isAuthenticated(state) {
+      return state.isAuthenticated
+    },
+    currentUser(state) {
+      return state.user
+    },
+    allUsers(state) { 
+      return state.users
     }
   },
   mutations: {
-    incrementLikes(state, postId) {
-      const post = state.posts.find(p => p.id === postId)
-      if (post) post.likes++
-    },
-    resetLikes(state) {
-      state.posts.forEach(post => {
-        post.likes = 0
-      });
+    setPosts(state, posts) {
+      state.posts = posts.reverse();
     },
     addPost(state, post) {
-      const newId =
-        state.posts.length > 0 ? Math.max(...state.posts.map(p => p.id)) + 1 : 1
-
-      const newPost = {
-        id: newId,
-        text: post.text,
-        created_at: post.created_at,
-        author: post.author,
-        logo: post.logo,
-        likes: 0
-      }
-
-      state.posts.push(newPost)
-      return newId
+      state.posts.unshift(post)
     },
-    updatePost(state, payload) {
-      const post = state.posts.find(p => p.id === payload.id)
-      if (post) {
-        post.text = payload.text
-      }
+    updatePost(state, updatedPost) {
+      const index = state.posts.findIndex(p => p.id === updatedPost.id)
+      if (index !== -1) state.posts.splice(index, 1, updatedPost) 
     },
     deletePost(state, id) {
       state.posts = state.posts.filter(p => p.id !== id)
+    },
+    setUsers(state, users) { 
+      state.users = users;
+    },
+    setUser(state, userPayload) {
+      state.user = userPayload;
+      state.isAuthenticated = true;
+    },
+    clearUser(state) {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.posts = [];
+      state.users = []; 
     }
   },
   actions: {
-    likePost({ commit }, postId) {
-      commit('incrementLikes', postId)
+    // --- Authentication ---
+    async authenticate({ commit, dispatch }) {
+      const response = await fetch(`${API_URL}/auth/authenticate`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      const data = await response.json();
+      if (data.authenticated) {
+        commit('setUser', { user_id: data.user_id, email: 'Authenticated User' });
+        await dispatch('fetchPosts');
+        return true;
+      } else {
+        commit('clearUser');
+        return false;
+      }
     },
-    resetAllLikes({ commit }) {
-      commit('resetLikes')
+
+    async logout({ commit }) {
+      await fetch(`${API_URL}/auth/logout`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      commit('clearUser');
     },
-    addPost({ commit }, post) {
-      return new Promise((resolve) => {
-        const id = commit('addPost', post)
-        resolve(id)
-      })
+
+    // --- Posts ---
+    async fetchPosts({ commit }) {
+      const response = await fetch(`${API_URL}/api/posts`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const posts = await response.json();
+        commit('setPosts', posts);
+      } else {
+        console.error('Failed to fetch posts:', response.statusText);
+      }
+    },
+
+    async resetAllPosts({ commit }) {
+      const response = await fetch(`${API_URL}/api/posts`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        commit('setPosts', []);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete all posts');
+      }
+    },
+
+    async likePost({ commit }, postId) {
+      const response = await fetch(`${API_URL}/api/posts/${postId}/like`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      const data = await response.json();
+      if (response.ok) commit('incrementLikes', postId)
+      else throw new Error(data.error || 'Failed to like post');
     }
   }
 })

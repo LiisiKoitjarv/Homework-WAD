@@ -29,13 +29,16 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'; 
+
 export default {
   name: 'SignupView',
   data() {
     return {
       email: "",
       password: "",
-      errors: []
+      errors: [],
+      apiError: null, // Data field to hold backend errors
     };
   },
 
@@ -46,7 +49,11 @@ export default {
   },
 
   methods: {
+    // Map the Vuex 'signup' action to 'this.signup'
+    ...mapActions(['signup']), 
+
     validatePassword() {
+      // Local password validation logic remains the same
       const passw = this.password;
       this.errors = [];
 
@@ -71,11 +78,27 @@ export default {
       return this.errors.length === 0;
     },
 
-    onSignup() {
+    // Asynchronous method to handle signup attempt
+    async onSignup() {
+        this.apiError = null; // Clear previous API error
         this.validatePassword();
+
         if(this.errors.length === 0) {
-          alert("Signed up");
-          this.$router.push('/');
+          try {
+            // 1. Dispatch the Vuex 'signup' action with email and password
+            await this.signup({ 
+              email: this.email, 
+              password: this.password 
+            });
+
+            // 2. If the action succeeds (user created, JWT set), redirect to home page
+            this.$router.push('/');
+
+          } catch (error) {
+            // 3. If the action fails (e.g., server validation, email already exists)
+            console.error('Signup failed:', error.message);
+            this.apiError = error.message; 
+          }
         }
     }
   }
@@ -94,7 +117,6 @@ export default {
   background-color: aliceblue;
 }
 
-/* login area style */
 .loginbox {
   background-color: white;
   border-radius: 15px;
@@ -123,7 +145,6 @@ export default {
   margin: 5px;
 }
 
-/* 'Sign up' button style */
 form button {
   background-color: #2d5fa6;
   color: #ffffff;
