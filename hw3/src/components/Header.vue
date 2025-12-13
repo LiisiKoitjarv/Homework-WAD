@@ -4,6 +4,7 @@
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/add">Add Post</router-link></li>
           <li><router-link to="/signup">Signup</router-link></li>
+          <li><router-link to="/contact">Contacts</router-link></li>
       </ul>
       <div class="profile-menu">
           <img src="@\assets\images\hw1icon.png" width="50" height="50" alt="My picture" class="logo">

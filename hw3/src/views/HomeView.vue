@@ -32,7 +32,7 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-   align-items: center; 
+  align-items: center; 
 }
 
 .posts-container {
