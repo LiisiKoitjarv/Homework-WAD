@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 const API_URL = 'http://localhost:3000'; 
 
 export default createStore({
-  state: {
+  state: { // holds array of posts, boolean if logged in or no, current user into and array of users
     posts: [], 
     isAuthenticated: false,
     user: null, 
@@ -156,78 +156,76 @@ export default createStore({
       }
     },
 
-    async likePost({ commit }, postId) {
-      const response = await fetch(`${API_URL}/api/posts/${postId}/like`, {
-        method: 'POST',
+    // function to update post body text
+    async updatePost({ commit }, updatedPost) {
+      const token = localStorage.getItem('token');
+
+      // send HTTP PUT request
+      const response = await fetch(`${API_URL}/api/posts/${updatedPost.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedPost),
         credentials: 'include'
       });
-      const data = await response.json();
-      if (response.ok) commit('incrementLikes', postId)
-      else throw new Error(data.error || 'Failed to like post');
+
+      // check for error
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update post');
+      }
+
+      // update post in state
+      const savedPost = await response.json();
+      commit('updatePost', savedPost);
+      return true;
+
     },
 
-    async updatePost({ commit }, updatedPost) {
-    const token = localStorage.getItem('token');
+    // function to delete specific post 
+    async deletePostById({ commit }, postId) {
+      const token = localStorage.getItem('token');
 
-    const response = await fetch(`${API_URL}/api/posts/${updatedPost.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(updatedPost),
-      credentials: 'include'
-    });
+      const response = await fetch(`${API_URL}/api/posts/${postId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include'
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to update post');
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete post');
+      }
 
-    const savedPost = await response.json();
-    commit('updatePost', savedPost);
-    return true;
-  },
+      commit('deletePost', postId);
+      return true;
+    },
 
-  async deletePostById({ commit }, postId) {
-    const token = localStorage.getItem('token');
+    // functuon to add a post
+    async addPost({ commit }, post) {
+      const token = localStorage.getItem('token');
 
-    const response = await fetch(`${API_URL}/api/posts/${postId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` },
-      credentials: 'include'
-    });
+      const response = await fetch(`${API_URL}/api/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(post),
+        credentials: 'include'
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to delete post');
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add post');
+      }
 
-    commit('deletePost', postId);
-    return true;
-  },
-  async addPost({ commit }, post) {
-    const token = localStorage.getItem('token');
+      const savedPost = await response.json();
+      commit('addPost', savedPost);
 
-    const response = await fetch(`${API_URL}/api/posts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(post),
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to add post');
-    }
-
-    const savedPost = await response.json();
-    commit('addPost', savedPost);
-
-    return true;
+      return true;
+    },
   }
-}
 })

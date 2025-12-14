@@ -15,8 +15,6 @@
 </template>
 
 <script>
-  import hw1icon from '@/assets/images/hw1icon.png'
-
 
   export default {
     name: 'AddPostView',
@@ -27,13 +25,12 @@
     },
     methods: {
       createPost() {
-        if (!this.body) return
+        if (!this.body) return // cant create empty post
         const newPost = {
           text: this.body,
           created_at: new Date().toISOString(),
-          author: 'user', // TODO get actual username
-          logo: hw1icon, // default profile pic
         }
+        // call addPost action from store and return to home page
         this.$store.dispatch('addPost', newPost)
         .then(() => {
           this.$router.push({ name: 'home' })

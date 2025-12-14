@@ -1,6 +1,6 @@
 <template>
   <div class="post-page">
-    <div class="center-box" v-if="post">
+    <div class="center-box">
       <h2>A Post</h2>
 
       <div class="row">
@@ -43,22 +43,14 @@ export default {
     ...mapActions(['updatePost', 'deletePostById']),
 
     async saveUpdate() {
-      try {
-        await this.updatePost({ id: this.post.id, text: this.editedText });
-        this.$router.push('/');
-      } catch (error) {
-        alert('Update failed: ' + error.message);
-      }
+      await this.updatePost({ id: this.post.id, text: this.editedText });
+      this.$router.push('/');
     },
 
     async deletePost() {
       if (!confirm('Are you sure you want to delete this post?')) return;
-      try {
-        await this.deletePostById(this.post.id);
-        this.$router.push('/');
-      } catch (error) {
-        alert('Delete failed: ' + error.message);
-      }
+      await this.deletePostById(this.post.id);
+      this.$router.push('/');
     }
   }
 }
