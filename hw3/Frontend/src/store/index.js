@@ -48,7 +48,6 @@ export default createStore({
     clearUser(state) {
       state.user = null;
       state.isAuthenticated = false;
-      state.isAuthenticated = false;
       state.posts = [];
       state.users = []; 
     }
