@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <div class="top-actions">
+      <button @click="logoutUser" class="logout-button">Logout</button>
+    </div>
     <div class="content-container"> 
       <!-- Post list component -->
       <PostList @postClick="goToPost" />
@@ -8,7 +11,6 @@
       <div class="action-buttons">
         <router-link to="/add" class="add-post-button">Add Post</router-link> 
         <button @click="deleteAllPosts" class="reset-posts-button">Delete All Posts</button>
-        <button @click="logoutUser" class="logout-button">Logout</button>
       </div>
     </div>
   </div>
@@ -73,10 +75,10 @@ export default {
 }
 .content-container { 
   width: 100%; 
-  max-width: 600px; 
+  max-width: 400px; 
   display: flex; 
   flex-direction: column; 
-  align-items: center; 
+  align-items: stretch; 
 }
 .action-buttons { 
   display: flex; 
@@ -98,6 +100,12 @@ export default {
   text-align: center; 
   border: none; 
   color: white; 
+}
+.top-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 .add-post-button { 
   background-color: #4cc1e4; 

@@ -5,10 +5,6 @@
           <li><router-link to="/contact">Contacts</router-link></li>
       </ul>
       <div class="profile-menu">
-            <template v-if="isAuthenticated">
-                <button @click="handleLogout" class="logout-button">Log out</button>
-            </template>
-            
             <div class="profile-icon-container">
                 <img v-if="isAuthenticated" src="@/assets/images/hw1icon.png" width="50" height="50" alt="Profile picture" class="logo authenticated">
 
@@ -29,16 +25,8 @@ export default {
     computed: {
         ...mapGetters(['isAuthenticated']) 
     },
-    
-    methods: {
-        ...mapActions(['logout']), 
-        
-        async handleLogout() {
-            await this.logout();
-            this.$router.push('/signup');
-        }
-    }
 }
+
 </script>
 
 <style scoped>
