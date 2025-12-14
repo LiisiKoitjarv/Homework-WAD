@@ -15,32 +15,32 @@
 </template>
 
 <script>
-import hw1icon from '@/assets/images/hw1icon.png'
+  import hw1icon from '@/assets/images/hw1icon.png'
 
 
-export default {
-  name: 'AddPostView',
-  data() {
-    return {
-      body: ''
-    }
-  },
-  methods: {
-    createPost() {
-      if (!this.body) return
-      const newPost = {
-        text: this.body,
-        created_at: new Date().toISOString(),
-        author: 'user', // TODO get actual username
-        logo: hw1icon, // default profile pic
+  export default {
+    name: 'AddPostView',
+    data() {
+      return {
+        body: ''
       }
-      this.$store.dispatch('addPost', newPost)
-      .then(() => {
-        this.$router.push({ name: 'home' })
-      })
+    },
+    methods: {
+      createPost() {
+        if (!this.body) return
+        const newPost = {
+          text: this.body,
+          created_at: new Date().toISOString(),
+          author: 'user', // TODO get actual username
+          logo: hw1icon, // default profile pic
+        }
+        this.$store.dispatch('addPost', newPost)
+        .then(() => {
+          this.$router.push({ name: 'home' })
+        })
+      }
     }
   }
-}
 </script>
 
 <style scoped>

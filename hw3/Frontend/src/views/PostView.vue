@@ -9,7 +9,7 @@
       </div>
 
       <div class="button-row">
-        <button @click="updatePost">Update</button>
+        <button @click="saveUpdate">Update</button>
         <button class="delete" @click="deletePost">Delete</button>
       </div>
     </div>
@@ -18,7 +18,7 @@
 
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'PostView',
@@ -40,16 +40,25 @@ export default {
     }
   },
   methods: {
-    updatePost() {
-      this.$store.commit('updatePost', {
-        id: this.post.id,
-        text: this.editedText
-      })
-      this.$router.push('/')
+    ...mapActions(['updatePost', 'deletePostById']),
+
+    async saveUpdate() {
+      try {
+        await this.updatePost({ id: this.post.id, text: this.editedText });
+        this.$router.push('/');
+      } catch (error) {
+        alert('Update failed: ' + error.message);
+      }
     },
-    deletePost() {
-      this.$store.commit('deletePost', this.post.id)
-      this.$router.push('/')
+
+    async deletePost() {
+      if (!confirm('Are you sure you want to delete this post?')) return;
+      try {
+        await this.deletePostById(this.post.id);
+        this.$router.push('/');
+      } catch (error) {
+        alert('Delete failed: ' + error.message);
+      }
     }
   }
 }

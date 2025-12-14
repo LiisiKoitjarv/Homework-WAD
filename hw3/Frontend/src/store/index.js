@@ -164,6 +164,70 @@ export default createStore({
       const data = await response.json();
       if (response.ok) commit('incrementLikes', postId)
       else throw new Error(data.error || 'Failed to like post');
+    },
+
+    async updatePost({ commit }, updatedPost) {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${API_URL}/api/posts/${updatedPost.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(updatedPost),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to update post');
     }
+
+    const savedPost = await response.json();
+    commit('updatePost', savedPost);
+    return true;
+  },
+
+  async deletePostById({ commit }, postId) {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${API_URL}/api/posts/${postId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to delete post');
+    }
+
+    commit('deletePost', postId);
+    return true;
+  },
+  async addPost({ commit }, post) {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${API_URL}/api/posts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(post),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to add post');
+    }
+
+    const savedPost = await response.json();
+    commit('addPost', savedPost);
+
+    return true; // ✅ this makes dispatch return a Promise
   }
+}
 })
