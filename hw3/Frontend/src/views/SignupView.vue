@@ -2,7 +2,7 @@
   <main class="main">
     <div class="loginbox">
       <p class="welcome"> Welcome to PostIt </p>
-      <p id="blue"> Log in </p>
+      <button id="blue" @click='this.$router.push("/login")'> Log in </button>
       <p> or </p>
       <p> Create an account </p>
 
@@ -78,29 +78,32 @@ export default {
       return this.errors.length === 0;
     },
 
-    // Asynchronous method to handle signup attempt
     async onSignup() {
-        this.apiError = null; // Clear previous API error
-        this.validatePassword();
+      this.apiError = null; // Clear previous API error
+      this.validatePassword();
 
-        if(this.errors.length === 0) {
-          try {
-            // 1. Dispatch the Vuex 'signup' action with email and password
-            await this.signup({ 
-              email: this.email, 
-              password: this.password 
-            });
+      if (this.errors.length === 0) {
+        try {
+          // Dispatch Vuex 'signup' action with email and password
+          const success = await this.signup({ 
+            email: this.email, 
+            password: this.password 
+          });
 
-            // 2. If the action succeeds (user created, JWT set), redirect to home page
-            this.$router.push('/');
+          if(success){
+            await this.login({ email: this.email, password: this.password }); 
 
-          } catch (error) {
-            // 3. If the action fails (e.g., server validation, email already exists)
-            console.error('Signup failed:', error.message);
-            this.apiError = error.message; 
-          }
+            this.$router.push({ name: 'home' });  
+      
+          }    
+
+        } catch (error) {
+          console.error('Signup failed:', error.message);
+          this.apiError = error.message; 
         }
+      }
     }
+
   }
 
 };
@@ -136,6 +139,13 @@ export default {
 #blue {
   font-size: 25px;
   color: #4cc1e4;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#blue:hover {
+    color: #368ea8;
 }
 
 #email, #password { 

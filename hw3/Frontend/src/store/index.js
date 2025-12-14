@@ -40,12 +40,14 @@ export default createStore({
     setUsers(state, users) { 
       state.users = users;
     },
-    setUser(state, userPayload) {
+    setUser(state, {userPayload, token}) {
       state.user = userPayload;
+      state.token = token;
       state.isAuthenticated = true;
     },
     clearUser(state) {
       state.user = null;
+      state.isAuthenticated = false;
       state.isAuthenticated = false;
       state.posts = [];
       state.users = []; 
@@ -54,13 +56,23 @@ export default createStore({
   actions: {
     // --- Authentication ---
     async authenticate({ commit, dispatch }) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        commit('clearUser');
+        return false;
+      }
+
       const response = await fetch(`${API_URL}/auth/authenticate`, {
         method: 'GET',
-        credentials: 'include'
+        headers: {
+          'Authorization': `Bearer ${token}`  
+        },
+        credentials: 'include', 
       });
+
       const data = await response.json();
       if (data.authenticated) {
-        commit('setUser', { user_id: data.user_id, email: 'Authenticated User' });
+        commit('setUser', { userPayload: { user_id: data.user_id, email: 'Authenticated User' }, token });
         await dispatch('fetchPosts');
         return true;
       } else {
@@ -90,6 +102,43 @@ export default createStore({
       } else {
         console.error('Failed to fetch posts:', response.statusText);
       }
+    },
+
+    async signup({ commit }, payload) {
+      const res = await fetch('http://localhost:3000/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok){
+        throw new Error('Signup failed');
+      }
+      const data = await res.json();
+
+      localStorage.setItem('token', data.token);
+      commit('setUser', {userPayload: {user_id: data.user_id, email: data.email }, token: data.token});
+      return true;
+    },
+
+    async login({ commit }, payload) {
+      const res = await fetch('http://localhost:3000/auth/login', {
+        method: "POST",
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok) {
+        throw new Error("Login failed");
+      }
+      const data = await res.json();
+
+      localStorage.setItem('token', data.token);
+      commit('setUser', {userPayload: {user_id: data.user_id, email:data.email}, token:data.token});
+
+      return true;
     },
 
     async resetAllPosts({ commit }) {

@@ -52,7 +52,7 @@ export default {
     async logoutUser() {
       try {
         await this.logout()
-        this.$router.push({ name: 'LoginPage' })
+        this.$router.push({ name: 'login' })
       } catch (error) {
         console.error('Logout failed', error)
       }
