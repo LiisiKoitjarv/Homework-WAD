@@ -4,7 +4,6 @@
       v-for="post in allPosts" 
       :key="post.id" 
       :post="post"
-      @click.native="handleClick(post.id)"
     />
   </div>
 </template>

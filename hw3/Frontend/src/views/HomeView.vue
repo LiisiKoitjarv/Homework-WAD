@@ -26,7 +26,7 @@ export default {
     // Authenticate and fetch posts automatically
     this.authenticate()
       .then(authenticated => {
-        if (!authenticated) this.$router.push({ name: 'LoginPage' })
+        if (!authenticated) this.$router.push({ name: 'login' })
       })
       .catch(err => console.error('Authentication failed', err))
   },
@@ -35,7 +35,7 @@ export default {
     ...mapActions(['authenticate', 'resetAllPosts', 'logout']),
 
     goToPost(id) {
-      this.$router.push({ name: 'PostPage', params: { id } })
+      this.$router.push({ name: 'post', params: { id } })
     },
 
     async deleteAllPosts() {

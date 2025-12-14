@@ -40,7 +40,7 @@ export default {
   methods: {
     ...mapActions(['likePost']),
     like() { this.likePost(this.post.id) },
-    openPost() { this.$router.push({ name: 'PostPage', params: { id: this.post.id } }) }
+    openPost() { this.$router.push({ name: 'post', params: { id: this.post.id } }) }
   }
 }
 </script>
