@@ -50,9 +50,9 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = store.getters.isAuthenticated;
 
   if(
-    (to.name === 'home' && (from.name === 'signup' || from.name === 'login')) && !isAuthenticated){
+    (to.name === 'home') && !isAuthenticated){
       next({name: 'login'}); //direct to login page
-    }
+  }
   else if ((to.name === 'login' || to.name === 'signup') && isAuthenticated){
     next({name: 'home'});
   }

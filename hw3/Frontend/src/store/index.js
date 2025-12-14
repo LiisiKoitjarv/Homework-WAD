@@ -110,6 +110,7 @@ export default createStore({
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
       if(!res.ok){
@@ -128,6 +129,7 @@ export default createStore({
         headers: {
           "Content-Type": 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
       if(!res.ok) {
