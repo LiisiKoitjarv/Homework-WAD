@@ -227,7 +227,7 @@ export default createStore({
     const savedPost = await response.json();
     commit('addPost', savedPost);
 
-    return true; // ✅ this makes dispatch return a Promise
+    return true;
   }
 }
 })
