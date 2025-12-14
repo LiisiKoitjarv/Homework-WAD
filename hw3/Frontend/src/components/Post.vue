@@ -10,10 +10,6 @@
     <p class="post-text">{{ post.text }}</p>
     <img v-if="post.image_url" :src="post.image_url" alt="Post image" class="post-image"/>
     <div class="post-footer">
-      <button @click.stop="like" class="like-button">
-        <img :src="require('@/assets/images/likebutton.png')" alt="Like" class="like-icon"/>
-        <span>{{ post.likes || 0 }}</span>
-      </button>
     </div>
   </div>
 </template>
@@ -48,8 +44,8 @@ export default {
 <style scoped>
 .post {
   border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 30px;
+  margin-bottom: 30px;
   border-radius: 8px;
   background-color: #f9f9f9;
   cursor: pointer; 

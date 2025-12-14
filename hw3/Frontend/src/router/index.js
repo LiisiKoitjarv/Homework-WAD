@@ -53,9 +53,6 @@ router.beforeEach((to, from, next) => {
     (to.name === 'home') && !isAuthenticated){
       next({name: 'login'}); //direct to login page
   }
-  else if ((to.name === 'login' || to.name === 'signup') && isAuthenticated){
-    next({name: 'home'});
-  }
   else {
     next();
   }

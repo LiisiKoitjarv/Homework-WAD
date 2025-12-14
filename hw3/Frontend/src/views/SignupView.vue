@@ -91,10 +91,7 @@ export default {
           });
 
           if(success){
-            await this.login({ email: this.email, password: this.password }); 
-
             this.$router.push({ name: 'home' });  
-      
           }    
 
         } catch (error) {
